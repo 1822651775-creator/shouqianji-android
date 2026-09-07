@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b67d1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="守钱记" />
+<title>守钱记 · 把钱留下来</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow"><span id="todayLabel"></span><span id="networkBadge" class="network-badge">本机</span></div>
+        <h1>守钱记</h1>
+      </div>
+      <button class="icon-btn" id="openSettings" aria-label="设置">⚙️</button>
+    </header>
+
+    <main>
+      <section class="page active" data-page="home">
+<div class="hero-card">
+          <div class="hero-top">
+            <div>
+              <div class="muted">本月净存</div>
+              <div class="hero-number" id="monthNet">¥0.00</div>
+            </div>
+            <div class="pill" id="monthStatus">开始记录</div>
+          </div>
+          <div class="hero-grid">
+            <div>
+              <span>本月收入</span>
+              <strong id="monthIncome">¥0.00</strong>
+            </div>
+            <div>
+              <span>本月支出</span>
+              <strong id="monthExpense">¥0.00</strong>
+            </div>
+            <div>
+              <span>今日守住</span>
+              <strong id="todaySaved">未设置预算</strong>
+            </div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-meta">
+              <span>本月存钱目标</span>
+              <span id="savingsTargetText">未设置</span>
+            </div>
+            <div class="progress"><div id="savingsProgress"></div></div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="primary-action expense" data-open-entry="expense">
+            <span class="big">－</span>
+            <span>记支出</span>
+          </button>
+          <button class="primary-action income" data-open-entry="income">
+            <span class="big">＋</span>
+            <span>记收入</span>
+          </button>
+        </div>
+
+
+        <section class="card" id="quickRepeatCard">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">QUICK REPEAT</div>
+              <h2>最近常用</h2>
+            </div>
+            <span class="compact-metric">少点几下</span>
+          </div>
+          <div id="quickRepeatList" class="quick-repeat-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">TODAY</div>
+              <h2>今天</h2>
+            </div>
+            <div class="compact-metric" id="todaySummary">0 笔</div>
+          </div>
+          <div class="today-grid">
+            <div class="metric">
+              <span>收入</span>
+              <strong id="todayIncome">¥0.00</strong>
+            </div>
+            <div class="metric">
+              <span>支出</span>
+              <strong id="todayExpense">¥0.00</strong>
+            </div>
+            <div class="metric accent">
+              <span>净存</span>
+              <strong id="todayNet">¥0.00</strong>
+            </div>
+          </div>
+          <div id="todayBudgetHint" class="hint-box"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">RECENT</div>
+              <h2>最近记录</h2>
+            </div>
+            <button class="text-btn" data-nav-to="records">全部</button>
+          </div>
+          <div id="recentList" class="list"></div>
+        </section>
+
+        <section class="card motivation">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">KEEP GOING</div>
+              <h2>保持下去</h2>
+            </div>
+            <div class="streak" id="streakBadge">0 天</div>
+          </div>
+          <p id="motivationText">今天记下第一笔，就算正式开始。</p>
+          <div class="completion-row">
+            <span>本月记账完整度</span>
+            <strong id="monthCompletion">0%</strong>
+          </div>
+        </section>
+      </section>
+
+      <section class="page" data-page="records">
+        <div class="page-title">
+          <div>
+            <div class="eyebrow">LEDGER</div>
+            <h2>明细</h2>
+          </div>
+          <button class="soft-btn" id="openFilter">筛选</button>
+        </div>
+        <div class="segmented" id="recordTypeFilter">
+          <button class="active" data-filter="all">全部</button>
+          <button data-filter="expense">支出</button>
+          <button data-filter="income">收入</button>
+        </div>
+        <div id="recordsList" class="list large-list"></div>
+      </section>
+
+      <section class="page" data-page="goals">
+        <div class="page-title">
+          <div>
+            <div class="eyebrow">GOALS</div>
+            <h2>存钱目标</h2>
+          </div>
+          <button class="soft-btn" id="addGoalBtn">＋ 新目标</button>
+        </div>
+
+        <section class="card intro-card">
+          <h3>让“少花一点”变成看得见的东西</h3>
+          <p>可以为相机、旅行、应急储备或任何想完成的事情单独建一个目标。你每存入一次，都能看到进度推进。</p>
+        </section>
+        <div id="goalsList" class="goal-grid"></div>
+
+        <div class="page-title sub">
+          <div>
+            <div class="eyebrow">COOLING LIST</div>
+            <h2>冲动消费冷静区</h2>
+          </div>
+          <button class="soft-btn" id="addWishBtn">＋ 想买</button>
+        </div>
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <h3>先放一放，再决定</h3>
+              <p class="muted">默认冷静 3 天；取消购买也算一次“守住”。</p>
+            </div>
+          </div>
+          <div id="wishList" class="list"></div>
+        </section>
+      </section>
+
+      <section class="page" data-page="analysis">
+        <div class="page-title">
+          <div>
+            <div class="eyebrow">INSIGHTS</div>
+            <h2>分析</h2>
+          </div>
+          <div class="month-switcher">
+            <button id="prevMonth">‹</button>
+            <span id="analysisMonthLabel"></span>
+            <button id="nextMonth">›</button>
+          </div>
+        </div>
+
+        <div class="analysis-grid">
+          <section class="card">
+            <div class="muted">当月净存率</div>
+            <div class="analysis-number" id="savingRate">0%</div>
+            <div class="tiny">净存 ÷ 收入</div>
+          </section>
+          <section class="card">
+            <div class="muted">最大支出类别</div>
+            <div class="analysis-number small" id="topCategory">暂无</div>
+            <div class="tiny" id="topCategoryAmount">¥0.00</div>
+          </section>
+        </div>
+
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">CATEGORY</div>
+              <h2>钱去哪了</h2>
+            </div>
+          </div>
+          <div id="categoryBars" class="bars"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">WEEKLY VIEW</div>
+              <h2>最近 7 天</h2>
+            </div>
+          </div>
+          <div id="weeklyBars" class="weekly-bars"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">ONE THING</div>
+              <h2>只给一个建议</h2>
+            </div>
+          </div>
+          <div id="singleAdvice" class="advice"></div>
+        </section>
+      </section>
+
+      <section class="page" data-page="me">
+        <div class="page-title">
+          <div>
+            <div class="eyebrow">YOU</div>
+            <h2>我的</h2>
+          </div>
+        </div>
+
+        <section class="card">
+          <div class="settings-list">
+            <button class="setting-row" id="settingsBudget">
+              <span><b>每日可自由支出预算</b><small>用于计算“今天守住多少钱”</small></span>
+              <strong id="dailyBudgetValue">未设置 ›</strong>
+            </button>
+            <button class="setting-row" id="settingsTarget">
+              <span><b>本月存钱目标</b><small>首页显示当月进度</small></span>
+              <strong id="monthTargetValue">未设置 ›</strong>
+            </button>
+            <button class="setting-row" id="settingsCurrency">
+              <span><b>货币符号</b><small>当前仅影响显示</small></span>
+              <strong>¥</strong>
+            </button>
+            <button class="setting-row" id="requestPersistence">
+              <span><b>加强本机数据保护</b><small>请求浏览器尽量长期保留本应用数据</small></span>
+              <strong id="persistenceValue">检查中 ›</strong>
+            </button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">DATA</div>
+              <h2>数据</h2>
+            </div>
+          </div>
+          <div class="data-actions">
+            <button class="soft-btn" id="exportData">导出备份</button>
+            <label class="soft-btn file-label">导入备份<input type="file" id="importData" accept="application/json" hidden /></label>
+            <button class="soft-btn danger" id="resetData">清空数据</button>
+          </div>
+          <p class="muted small-copy">第二版仍以本机离线保存为主，并可请求浏览器加强持久化保护。更换手机、卸载浏览器或清理网站数据前，仍建议先导出备份。</p>
+        </section>
+
+        <section class="card about">
+          <div class="brand-mark">守</div>
+          <div>
+            <h3>守钱记 · Mobile 2.0</h3>
+            <p>不追求“记得最细”，先追求“愿意一直记”。</p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="active" data-nav="home"><span>⌂</span><small>首页</small></button>
+      <button data-nav="records"><span>≡</span><small>明细</small></button>
+      <button data-nav="goals"><span>◎</span><small>目标</small></button>
+      <button data-nav="analysis"><span>▥</span><small>分析</small></button>
+      <button data-nav="me"><span>○</span><small>我的</small></button>
+    </nav>
+  </div>
+
+  <div class="modal-backdrop" id="entryModal">
+    <div class="modal sheet">
+      <div class="modal-head">
+        <h3 id="entryTitle">记一笔</h3>
+        <button class="icon-btn close-modal">✕</button>
+      </div>
+      <div class="type-toggle">
+        <button data-entry-type="expense" class="active">支出</button>
+        <button data-entry-type="income">收入</button>
+      </div>
+      <div class="amount-input">
+        <span>¥</span>
+        <input id="entryAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" />
+      </div>
+      <div>
+        <label class="field-label">分类</label>
+        <div id="categoryPicker" class="category-picker"></div>
+      </div>
+      <div class="form-grid">
+        <label>
+          <span class="field-label">日期</span>
+          <input id="entryDate" type="date" />
+        </label>
+        <label>
+          <span class="field-label">备注</span>
+          <input id="entryNote" type="text" maxlength="40" placeholder="可不填" />
+        </label>
+      </div>
+      <button class="save-btn" id="saveEntry">保存这笔</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="goalModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>新建存钱目标</h3>
+        <button class="icon-btn close-modal">✕</button>
+      </div>
+      <label class="stack-field">目标名称<input id="goalName" placeholder="例如：旅行基金" maxlength="20" /></label>
+      <label class="stack-field">目标金额<input id="goalTarget" type="number" min="1" step="0.01" placeholder="5000" /></label>
+      <label class="stack-field">当前已经存了<input id="goalCurrent" type="number" min="0" step="0.01" placeholder="0" /></label>
+      <button class="save-btn" id="saveGoal">创建目标</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="wishModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>加入冷静区</h3>
+        <button class="icon-btn close-modal">✕</button>
+      </div>
+      <label class="stack-field">想买什么<input id="wishName" placeholder="例如：新耳机" maxlength="30" /></label>
+      <label class="stack-field">预计价格<input id="wishAmount" type="number" min="0" step="0.01" placeholder="799" /></label>
+      <label class="stack-field">冷静几天<input id="wishDays" type="number" min="1" max="90" value="3" /></label>
+      <button class="save-btn" id="saveWish">先放一放</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="simpleModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="simpleModalTitle">设置</h3>
+        <button class="icon-btn close-modal">✕</button>
+      </div>
+      <label class="stack-field"><span id="simpleModalLabel">金额</span><input id="simpleModalValue" type="number" min="0" step="0.01" /></label>
+      <button class="save-btn" id="saveSimpleSetting">保存</button>
+    </div>
+  </div>
+</div>
+
+  <div class="toast" id="toast"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
